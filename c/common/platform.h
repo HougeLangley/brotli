@@ -665,7 +665,11 @@ BROTLI_UNUSED_FUNCTION void BrotliSuppressUnusedFunctions(void) {
 #undef BROTLI_TEST
 #endif
 
-#if BROTLI_GNUC_HAS_ATTRIBUTE(model, 3, 0, 3)
+/* LoongArch: GCC advertises the `model` attribute but rejects it for this
+   target ("invalid argument to attribute 'model'"). Restrict the attribute to
+   architectures where it is actually meaningful. */
+#if BROTLI_GNUC_HAS_ATTRIBUTE(model, 3, 0, 3) && \
+    (defined(__aarch64__) || defined(__riscv) || defined(__arm__))
 #define BROTLI_MODEL(M) __attribute__((model(M)))
 #else
 #define BROTLI_MODEL(M) /* M */
